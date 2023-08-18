@@ -1,0 +1,45 @@
+\begin{table}[H]
+\begin{tabular}{ rrr }pma & fun & hro\begin{tabular}{lrr}
+\toprule
+ & score & freq \\
+\midrule
+GER & {\cellcolor[HTML]{2E924C}} \color[HTML]{F1F1F1} 0.216988 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.003135 \\
+INT & {\cellcolor[HTML]{A1D889}} \color[HTML]{000000} 0.125486 & {\cellcolor[HTML]{F9FDC5}} \color[HTML]{000000} 0.031348 \\
+? & {\cellcolor[HTML]{B8E293}} \color[HTML]{000000} 0.107569 & {\cellcolor[HTML]{F2FAB5}} \color[HTML]{000000} 0.047022 \\
+X & {\cellcolor[HTML]{D6EFA2}} \color[HTML]{000000} 0.081624 & {\cellcolor[HTML]{BAE394}} \color[HTML]{000000} 0.105016 \\
+MUS & {\cellcolor[HTML]{D7EFA2}} \color[HTML]{000000} 0.080111 & {\cellcolor[HTML]{9FD788}} \color[HTML]{000000} 0.126959 \\
+PHA & {\cellcolor[HTML]{E1F3A9}} \color[HTML]{000000} 0.068355 & {\cellcolor[HTML]{5AB76A}} \color[HTML]{F1F1F1} 0.175549 \\
+EPI & {\cellcolor[HTML]{E6F5AC}} \color[HTML]{000000} 0.063155 & {\cellcolor[HTML]{369D54}} \color[HTML]{F1F1F1} 0.205329 \\
+NER & {\cellcolor[HTML]{E5F5AC}} \color[HTML]{000000} 0.063512 & {\cellcolor[HTML]{004529}} \color[HTML]{F1F1F1} 0.305643 \\
+\bottomrule
+\end{tabular}
+ & \begin{tabular}{lrr}
+\toprule
+ & score & freq \\
+\midrule
+GER & {\cellcolor[HTML]{84CB7E}} \color[HTML]{000000} 0.157615 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.002981 \\
+GLA & {\cellcolor[HTML]{D5EEA1}} \color[HTML]{000000} 0.089513 & {\cellcolor[HTML]{FCFED4}} \color[HTML]{000000} 0.019374 \\
+INT & {\cellcolor[HTML]{DDF2A6}} \color[HTML]{000000} 0.078844 & {\cellcolor[HTML]{FAFDC9}} \color[HTML]{000000} 0.029806 \\
+BLA & {\cellcolor[HTML]{E4F4AB}} \color[HTML]{000000} 0.069614 & {\cellcolor[HTML]{EDF8B1}} \color[HTML]{000000} 0.058122 \\
+STR & {\cellcolor[HTML]{E7F6AD}} \color[HTML]{000000} 0.065764 & {\cellcolor[HTML]{E5F5AC}} \color[HTML]{000000} 0.068554 \\
+EPI & {\cellcolor[HTML]{F3FAB6}} \color[HTML]{000000} 0.050339 & {\cellcolor[HTML]{9DD688}} \color[HTML]{000000} 0.138599 \\
+DEA & {\cellcolor[HTML]{F4FBB7}} \color[HTML]{000000} 0.048439 & {\cellcolor[HTML]{75C578}} \color[HTML]{000000} 0.168405 \\
+MUS & {\cellcolor[HTML]{F7FCB9}} \color[HTML]{000000} 0.044478 & {\cellcolor[HTML]{62BB6E}} \color[HTML]{F1F1F1} 0.183308 \\
+NEU & {\cellcolor[HTML]{F8FDC1}} \color[HTML]{000000} 0.037532 & {\cellcolor[HTML]{004529}} \color[HTML]{F1F1F1} 0.330849 \\
+\bottomrule
+\end{tabular}
+ & \begin{tabular}{lrr}
+\toprule
+ & score & freq \\
+\midrule
+MES & {\cellcolor[HTML]{F5FBB8}} \color[HTML]{000000} 0.108711 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.054545 \\
+UND & {\cellcolor[HTML]{F9FDC4}} \color[HTML]{000000} 0.092802 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.054545 \\
+MUS & {\cellcolor[HTML]{FBFDCE}} \color[HTML]{000000} 0.081251 & {\cellcolor[HTML]{F9FDC5}} \color[HTML]{000000} 0.090909 \\
+NOT & {\cellcolor[HTML]{F8FDC1}} \color[HTML]{000000} 0.095617 & {\cellcolor[HTML]{F9FDC5}} \color[HTML]{000000} 0.090909 \\
+END & {\cellcolor[HTML]{F1FAB5}} \color[HTML]{000000} 0.114746 & {\cellcolor[HTML]{F5FBB8}} \color[HTML]{000000} 0.109091 \\
+NER & {\cellcolor[HTML]{FBFDCF}} \color[HTML]{000000} 0.080426 & {\cellcolor[HTML]{DEF2A7}} \color[HTML]{000000} 0.145455 \\
+EPI & {\cellcolor[HTML]{FEFFDF}} \color[HTML]{000000} 0.061407 & {\cellcolor[HTML]{004529}} \color[HTML]{F1F1F1} 0.454545 \\
+\bottomrule
+\end{tabular}
+\end{tabular}
+\end{table}

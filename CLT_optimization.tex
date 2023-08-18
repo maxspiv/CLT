@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+%\documentclass[a6paper]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{lscape}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{changepage}
+\usepackage{geometry}
+%\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{hyperref}
+%\usepackage{breqn}
+\usepackage{float}
+\usepackage{xcolor,colortbl} 
+\geometry{letterpaper, portrait, margin=1in}
+
+\usepackage{graphicx}
+\graphicspath{ {./graphs/} }
+
+\title{CLT optimization}
+\author{Maxwell Spivakovsky}
+
+\begin{document}
+\maketitle
+\section{CLT}
+In \cite{CLT} an algorithm for aligning two cell lineage trees is proposed. The algorithm is based on dynamic programming, choosing an alignment that optimizes the score between two trees. There are two external inputs to the algorithm: (1) the score matrix between the cell type of any terminal node of tree A and the cell type of any terminal node of tree B and (2) the pruning cost of leaving out a tree node of either tree A or tree B from the aligned tree. As mentioned in the \cite{CLT} both of these are crucial to the results of alignment. Yet there is no theoretical model that selects these parameters; in the examples in the paper the scores used are either 2 or 0 and the pruning cost is chosen to be 1. There is a section that describes a greedy algorithm for choosing each score from a small number of available scores, but the algorithm relies on the assumption of the pruning cost that is fixed at 10, 20, 40, and 80 at each of the four rounds of the algorithm. \\
+The main difficulty in relating the score matrix and the pruning cost to the output alignment score is that the dynamic programming algorithm is recursive by nature. To align two trees, each on the order of a thousand nodes requires the order of a million evaluations, where each evaluation may depend on the results of four other evaluations. This recursion makes the dependence on the score matrix and the pruning cost highly non-linear. But each evaluation on its own is a continuous function of the parameters, more specifically, the maximum of the results of several continuous evaluations, where the maximum corresponds to the dynamic programming nature of the solution. Deep learning packages like pyTorch are well suited for both recursive evaluations and for optimizing a piecewise linear objective function. The approach taken below treats the alignment score as a function of the score matrix and the tuning cost parameter and optimizes an objective function of these parameters. This not only optimizes the score matrix and the tuning cost separately but also accounts for how these parameters influence each other. The objective function that is optimized is not simply the alignment score between the two trees, the score matrix that produces a high alignment score could be aligning completely unrelated cells. Instead, the objective function maximizes the alignment score between two trees relative to the alignment scores of the random trees, constructed by randomly permuting the terminal nodes of each tree while keeping the rest of the structure unchanged. Let the alignment score between two trees, A and B be denoted as
+\begin{equation*}
+  A(a,b)
+\end{equation*}
+Let \(a_{\sigma^a}\) denote a tree that has the same structure as tree \(a\) but whose terminal nodes have been permuted according to the permutation \(\sigma^a\). Suppose \(N\) such permutations are carried out and their mean and standard deviation are computed:
+\begin{gather*}
+  \mu = {\frac 1 N} \sum_{i=1}^N A(a_{\sigma^a_i},b_{\sigma^b_i}) \\
+  \sigma^2 = {\frac 1 N} \sum_{i=1}^N  \Bigl( A(a_{\sigma^a_i},b_{\sigma^b_i}) - \mu \Bigr)^2 \\
+\end{gather*}
+These quantities depend on the score matrix \(S\) and pruning cost \(p\). The objective function is
+\begin{equation*}
+  F(S,p) = {\frac { A(a,b)-\mu} \sigma}
+\end{equation*}
+Maximizing \(F(S,p)\) is choosing \(S,p\) that results in the highest alignment score of the two trees relative to the alignment scores of randomly permuted trees. The intention is that \(S,p\) are capturing the relationship between the two trees, both the geometry of each tree separately, as well as the geometry of their combination. Optimization is done with pyTorch in the typical deep learning fashion: a batch of random trees is created and \(F(S,p)\) is evaluated with respect to that batch. pyTorch computes the gradient of \(F(S,p)\) and modifies the values of \(S\) and \(p\). Then another batch is created, different from the preceding one, and the process is repeated. It takes around 10,000 batches to converge to a solution. The matrix \(S\) is normalized to the unit norm at each step by applying \(softmax\) to \(S\). Below is a typical convergence profile of the model:
+
+\includegraphics[width=\textwidth]{ave_loss.png}
+
+the x-axis is the number of batches. the y-axis shows by how many standard deviations the average batch's permuted trees alignment score is lower than the alignment score of the actual trees. This quantity is calculated on each batch before the score matrix and the pruning cost is changed after processing the batch so that the random trees in that batch have not been incorporated into optimization.\\
+\subsection{Optimal score matrix for a tree}
+When a tree is aligned with itself perfect alignment is expected. Intuitively, optimization should place high scores on matching a cell type from tree 1 to the same cell type of tree 2. There are 3 lineage trees in the GitHub that corresponds to the results in \cite{CLT}. The names of the three trees are 'fun','pma', and 'hro'. 'fun' seems to correspond to {\it Caenorhabditis elegans}, 'pma' to {\it P. marina}. For each of the three trees, the optimizer selected the optimal score matrix when aligning the tree to itself. Since tree 1 and tree 2 correspond to the same organism the score matrix was constrained to be symmetric. The results are below.
+
+\input{./tables/fun_fun_best}
+\input{./tables/pma_pma_best}
+\input{./tables/hro_hro_best}
+
+The resulting score matrix follows a pattern that makes sense: cells of the same cell type have high scores. These are the cells on the diagonals. What is interesting is the differences in the values of different types. They are inversely correlated to the relative frequency of that type in the tree. The table below shows this relationship
+
+\input{./tables/best_same}
+Interestingly, not all 100\% of weights go to the diagonal but only about \(\frac 2 3\), except for \(p.marina\) where the number is 80\%. The rest are distributed off-diagonal and show the relevance of the structure of the tree. \\
+The structure becomes more important when the score matrix is optimized between two trees of, potentially, different species that may have almost no common cell types. Optimized score matrices reveal a shared structure:
+
+\input{./tables/pma_fun_best}
+\input{./tables/hro_fun_best}
+\input{./tables/hro_pma_best}
+
+pma and fun share many of the same cell types and the mutual alignment of three of them, GER, INT, and MUS, correspond to the three highest scores in the matrix but they still add up to under 20\% of the total score. The other two cases have even less correspondence between cell types, with cell types labeled as the same type sometimes getting 0 weight (EPI in hro aligned with fun). The conditional distributions of a sibling conditional on the sibling, or of a child conditional on parents or grandparents become the primary drivers of alignment. These conditional distributions are complicated objects because they depend on many recursive layers. Score matrices reflect these conditional distributions through pairwise scores.\\
+Optimal pruning costs vary quite a lot from scenario to scenario:\\
+\begin{table}
+  \center
+\begin{tabular}{lrrr}
+\toprule
+ & fun & hro & pma \\
+\midrule
+fun & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.000000 & {\cellcolor[HTML]{004529}} \color[HTML]{F1F1F1} 0.155655 & {\cellcolor[HTML]{FBFDCF}} \color[HTML]{000000} 0.009906 \\
+hro & {\cellcolor[HTML]{004529}} \color[HTML]{F1F1F1} 0.155655 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.000000 & {\cellcolor[HTML]{3FA95C}} \color[HTML]{F1F1F1} 0.098156 \\
+pma & {\cellcolor[HTML]{FBFDCF}} \color[HTML]{000000} 0.009906 & {\cellcolor[HTML]{3FA95C}} \color[HTML]{F1F1F1} 0.098156 & {\cellcolor[HTML]{FFFFE5}} \color[HTML]{000000} 0.000000 \\
+\bottomrule
+\end{tabular}
+\caption{Optimal pruning costs}
+\end{table}
+Since it is easy to get full alignment when the two trees represent the same organism, pruning costs are zero in that case. Pruning costs when aligning fun and hro or pma and hro are of the same order of magnitude as the hand-picked pruning costs in \cite{CLT}. For aligning fun and pma the optimal pruning cost is an order of magnitude smaller.
+
+\begin{thebibliography}{1}
+
+\bibitem{CLT}
+  Yuan M, Yang X, Lin J, Cao X, Chen F, Zhang X, Li Z, Zheng G, Wang X, Chen X, Yang JR. Alignment of Cell Lineage Trees Elucidates Genetic Programs for the Development and Evolution of Cell Types. iScience. 2020 Jul 24;23(7):101273. doi: 10.1016/j.isci.2020.101273. Epub 2020 Jun 16. PMID: 32599560; PMCID: PMC7327887.
+
+\end{thebibliography}
+
+\end{document}

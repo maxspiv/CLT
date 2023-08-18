@@ -1,0 +1,11 @@
+[build-system]
+requires = ['setuptools']
+
+[project]
+name = 'mydelta'
+authors = [{name = 'Max'}]
+description = 'DELTA implementation'
+version = '0.1.0'
+
+#[tool.setuptools]
+#packages = ['mydelta']

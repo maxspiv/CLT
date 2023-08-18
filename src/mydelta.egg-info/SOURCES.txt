@@ -1,0 +1,12 @@
+pyproject.toml
+src/mydelta/DP_fast.py
+src/mydelta/DP_recursive.py
+src/mydelta/Tree.py
+src/mydelta/__init__.py
+src/mydelta/delta.py
+src/mydelta/delta_torch.py
+src/mydelta/fast_indices.py
+src/mydelta.egg-info/PKG-INFO
+src/mydelta.egg-info/SOURCES.txt
+src/mydelta.egg-info/dependency_links.txt
+src/mydelta.egg-info/top_level.txt
